@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Check Nodejs Version
+node --version
+# if 18, skip nodejs steps
+
+# Delete Nodejs old files
+apt-get remove nodejs
+apt-get purge nodejs
+apt-get autoremove
+rm /etc/apt/keyrings/nodesource.gpg
+rm /etc/apt/sources.list.d/nodesource.list
+
+# Install Nodejs 18
+NODE_MAJOR=18
+apt-get update
+apt-get install -y ca-certificates curl gnupg
+mkdir -p /etc/apt/keyrings
+
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_${NODE_MAJOR}.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+
+apt-get update
+apt-get install -y nodejs
+node --version
+
+# Install npm
+apt-get install npm
+npm --version
+
+apt-get install git
+
+apt update & sudo apt upgrade -y
+
+git clone https://github.com/dante4rt/sonic-odyssey-bot.git
+cd sonic-odyssey-bot
+npm install
+
+read -p 'private_key : ' privatekey
+rm privateKeys.json
+touch privateKeys.json
+echo "[" >> privateKeys.json
+echo -e "  \x22$privatekey\x22" >> privateKeys.json
+echo "]" >> privateKeys.json
